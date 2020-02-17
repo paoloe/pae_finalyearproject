@@ -64,35 +64,26 @@ void loop()
   byte letter;
   for (byte i = 0; i < mfrc522.uid.size; i++) 
   {
-     Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+     Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : "");
      Serial.print(mfrc522.uid.uidByte[i], HEX);
-     content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+     content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : ""));
      content.concat(String(mfrc522.uid.uidByte[i], HEX));
   }
   Serial.println();
   Serial.print("Message : ");
   content.toUpperCase();
-  if (content.substring(1) == "19 7A 14 2B") //change here the UID of the card/cards that you want to give access
+  // play the track using value of content
+  tmrpcm.play(content.c_str());
+  
+  if(tmrpcm.isPlaying())
   {
-    Serial.println("Authorized access");
-    Serial.println();
-    tmrpcm.play("3.wav");
-    
-    while(tmrpcm.isPlaying())
-    {
-      // do nothing (but this breaks the code)
-      Serial.println("!");
-    }
-    //tmrpcm.stopPlayback();
-    //tmrpcm.disable();
+    Serial.println("Track Playing!") ;   
   }
- 
-  else   {
-    Serial.println(" Access denied");
-    Serial.println();
-    delay(2000);
+  else
+  {
+    Serial.println("Track not Found!")  ;
   }
-  Serial.println("Finir");
+  Serial.println("Finished Playing!");
 } 
 
 void logCard() {
