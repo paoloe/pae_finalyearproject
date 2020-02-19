@@ -72,18 +72,18 @@ void loop()
   Serial.println();
   Serial.print("Message : ");
   content.toUpperCase();
+  
+  // adding the audio file type at the end of the UID
+  content += ".wav";
   // play the track using value of content
   tmrpcm.play(content.c_str());
   
-  if(tmrpcm.isPlaying())
+  while(tmrpcm.isPlaying())
   {
-    Serial.println("Track Playing!") ;   
+    // prints the below while track is playing
+    Serial.println("Track Playing!");    
   }
-  else
-  {
-    Serial.println("Track not Found!")  ;
-  }
-  Serial.println("Finished Playing!");
+   Serial.println("Finished!");
 } 
 
 void logCard() {
