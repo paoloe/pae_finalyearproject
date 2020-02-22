@@ -11,6 +11,7 @@
 #include <MFRC522.h>        // lib for the RFID module
 #include <SD.h>             // lib for the SD card module
 #include <TMRpcm.h>         // lib for the audio player
+#include <algorithm>        // lib for erasing char from a string
 //#include <pcmConfig.h>    // lib for the audio player
 
 // define the Slave Select pin
@@ -73,6 +74,9 @@ void loop()
   Serial.print("Message : ");
   content.toUpperCase();
   
+  // use the function to remove all the white space with a given string
+  content = removeSpaces(content);
+
   // adding the audio file type at the end of the UID
   content += ".wav";
   // play the track using value of content
@@ -103,3 +107,13 @@ digitalWrite(CS_SD, LOW);
   
 digitalWrite(CS_SD, HIGH);
 }
+
+/* 
+ * Source: https://www.geeksforgeeks.org/remove-spaces-from-a-given-string/
+ * Function to remove all spaces from a given string  
+ */
+string removeSpaces(string str)  
+{ 
+    str.erase(remove(str.begin(), str.end(), ' '), str.end()); 
+    return str; 
+} 
