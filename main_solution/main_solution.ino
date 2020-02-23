@@ -73,17 +73,24 @@ void loop()
   Serial.print("Message : ");
   content.toUpperCase();
   
+  // remove white spce from track name!
+  content.replace(" ", "");
   // adding the audio file type at the end of the UID
   content += ".wav";
+  Serial.println(content);
   // play the track using value of content
   tmrpcm.play(content.c_str());
   
   while(tmrpcm.isPlaying())
   {
     // prints the below while track is playing
-    Serial.println("Track Playing!");    
+    Serial.println("Track Playing!");
+    // add a delay
+    delay(2000);
   }
-   Serial.println("Finished!");
+  Serial.println("Finished!");
+  // add a delay
+  delay(2000);
 } 
 
 void logCard() {
