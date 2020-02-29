@@ -78,12 +78,15 @@ void loop()
   
   // remove white space from track name!
   content.replace(" ", "");
+  if(content.length() > 8){
+    content = modString(content.c_str());  
+  }
+    
   // adding the audio file type at the end of the UID
   content += ".wav";
   Serial.println(content.c_str());
   // play the track using value of content
   //tmrpcm.play(content.c_str());
-  tmrpcm.play("04AD3C~1.WAV");
   
   while(tmrpcm.isPlaying())
   {
@@ -91,4 +94,13 @@ void loop()
     Serial.println("Track Playing!");
   }
   Serial.println("Finished!");
+  delay(2000);
 } 
+
+String modString(String input)
+{  
+  int x = input.length() - 6;
+  input.remove(6, x);
+  input += "~1";
+  return input;
+}
