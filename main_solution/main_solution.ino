@@ -22,10 +22,13 @@
 // Create MFRC522 instance.
 MFRC522 mfrc522(SS_PIN, RST_PIN);   
 
-// define chip select for sd card
-#define CS_SD 4
 // deinge an instance of a directory
 File myFile;
+
+// define chip select for sd card
+#define CS_SD 4
+
+
 // define the instance of the track player
 TMRpcm tmrpcm;
 
@@ -73,40 +76,31 @@ void loop()
   Serial.print("Message : ");
   content.toUpperCase();
   
-  // remove white spce from track name!
+  // remove white space from track name!
   content.replace(" ", "");
+  if(content.length() > 8){
+    content = modString(content.c_str());  
+  }
+    
   // adding the audio file type at the end of the UID
   content += ".wav";
-  Serial.println(content);
+  Serial.println(content.c_str());
   // play the track using value of content
-  tmrpcm.play(content.c_str());
+  //tmrpcm.play(content.c_str());
   
   while(tmrpcm.isPlaying())
   {
     // prints the below while track is playing
     Serial.println("Track Playing!");
-    // add a delay
-    delay(2000);
   }
   Serial.println("Finished!");
-  // add a delay
   delay(2000);
 } 
 
-void logCard() {
-  // Enables SD card chip select pin
-digitalWrite(CS_SD, LOW);
-  tmrpcm.setVolume(6);
-  //tmrpcm.play("1.wav"); 
-  tmrpcm.play("3.wav", 240);
-  //tmrpcm.play("2.wav");
-  //delay(2000);
-//  while(tmrpcm.isPlaying()){
-//   Serial.println("!");
-//  }
-  Serial.println("Finished!");
-  tmrpcm.stopPlayback();// when finished stop playback
-//  tmrpcm.disable();
-  
-digitalWrite(CS_SD, HIGH);
+String modString(String input)
+{  
+  int x = input.length() - 6;
+  input.remove(6, x);
+  input += "~1";
+  return input;
 }
