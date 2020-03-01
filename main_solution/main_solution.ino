@@ -1,11 +1,12 @@
-/*
+/**
  * 
  * All the resources for this project: https://randomnerdtutorials.com/
  * Modified by Rui Santos
  * 
  * Created by FILIPEFLOP
  * 
- */
+ **/
+
 #include <Arduino.h>
 #include <SPI.h>            // library for SPI 
 #include <MFRC522.h>        // lib for the RFID module
@@ -27,7 +28,6 @@ File myFile;
 
 // define chip select for sd card
 #define CS_SD 4
-
 
 // define the instance of the track player
 TMRpcm tmrpcm;
@@ -64,14 +64,10 @@ void loop()
   Serial.println("Approximate Card!");
   Serial.print("UID tag :");
   String content= "";
-  byte letter;
-  for (byte i = 0; i < mfrc522.uid.size; i++) 
-  {
-     Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : "");
-     Serial.print(mfrc522.uid.uidByte[i], HEX);
-     content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : ""));
-     content.concat(String(mfrc522.uid.uidByte[i], HEX));
-  }
+
+  // retrieves the UID and assigns it to content
+  extractUID(content);
+
   Serial.println();
   Serial.print("Message : ");
   content.toUpperCase();
@@ -85,6 +81,9 @@ void loop()
   // adding the audio file type at the end of the UID
   content += ".wav";
   Serial.println(content.c_str());
+
+  // add file exists method here!
+
   // play the track using value of content
   //tmrpcm.play(content.c_str());
   
@@ -97,10 +96,50 @@ void loop()
   delay(2000);
 } 
 
+/**
+ * modString
+ * This method modifies a string the same way that the
+ * SD library modifies file names larger than 8 
+ * characters
+ **/
 String modString(String input)
 {  
   int x = input.length() - 6;
   input.remove(6, x);
   input += "~1";
   return input;
+}
+
+/**
+ * fileExist
+ * This method will be check if a given file name exists
+ * within the SD card, if not it will then save the string
+ * into a text file within the SD card, this is how the 
+ * prototype is maintained and new audio files are added
+ **/
+void fileExist(String input){
+  /**
+   * check if the input file exists if it does then return 
+   * true
+   * else save the input to a text file in the SD card as
+   * as the UID file name that can be used this way the 
+   * user is able to easily add new audio tracks etc
+   **/
+  CS_SD.exists(input);
+}
+
+/**
+ * extractUID
+ * This method was originally within the main body but 
+ * I'm following the SOLID principles so I am moving it out
+ * the main
+ **/
+void extractUID(String content){
+  for (byte i = 0; i < mfrc522.uid.size; i++) 
+  {
+     Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : "");
+     Serial.print(mfrc522.uid.uidByte[i], HEX);
+     content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : ""));
+     content.concat(String(mfrc522.uid.uidByte[i], HEX));
+  }
 }
