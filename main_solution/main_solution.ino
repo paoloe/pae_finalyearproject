@@ -83,6 +83,7 @@ void loop()
   Serial.println(content.c_str());
 
   // add file exists method here!
+  handleFile(content.c_str());
 
   // play the track using value of content
   //tmrpcm.play(content.c_str());
@@ -117,7 +118,7 @@ String modString(String input)
  * into a text file within the SD card, this is how the 
  * prototype is maintained and new audio files are added
  **/
-void fileExist(String input){
+void handleFile(String input){
   /**
    * check if the input file exists if it does then return 
    * true
@@ -125,7 +126,30 @@ void fileExist(String input){
    * as the UID file name that can be used this way the 
    * user is able to easily add new audio tracks etc
    **/
-  CS_SD.exists(input);
+
+  // bool value that checks if the input exists in the SD card
+  bool result = CS_SD.exists(input);
+
+  // if file exists
+  if(result){
+   tmrpcm.play(input);
+  }
+  // if does not exist
+  else{
+     // open a file called 
+    CS_SD.open("usable_uid.txt", FILE_WRITE);
+    // checks if the file opened
+    if(CS_SD){
+      Serial.println("Adding UID to text");
+      // writing UID to text file
+      CS_SD.println(input);
+    }
+    // if file opens unsuccessfully 
+    else{
+      Serial.println("Error opening file!");
+    }
+  }
+
 }
 
 /**
