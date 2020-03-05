@@ -66,7 +66,7 @@ void loop()
   String content= "";
 
   // retrieves the UID and assigns it to content
-  extractUID(content);
+  content = extractUID(content);
 
   Serial.println();
   Serial.print("Message : ");
@@ -77,22 +77,26 @@ void loop()
   if(content.length() > 8){
     content = modString(content.c_str());  
   }
-    
+  
   // adding the audio file type at the end of the UID
-  content += ".wav";
-  Serial.println(content.c_str());
+  content = content + ".wav";
+  Serial.println(content);
 
   // add file exists method here!
   handleFile(content.c_str());
 
   // play the track using value of content
   //tmrpcm.play(content.c_str());
-  
-  while(tmrpcm.isPlaying())
-  {
-    // prints the below while track is playing
-    Serial.println("Track Playing!");
-  }
+
+  /* commented the below out to allow users to play another audio 
+  track, it will just stop the track currently playing and play 
+  the next one */
+
+   while(tmrpcm.isPlaying())
+   {
+     // prints the below while track is playing
+     Serial.println("Track Playing!");
+   }
   Serial.println("Finished!");
   delay(2000);
 } 
@@ -127,29 +131,37 @@ void handleFile(String input){
    * user is able to easily add new audio tracks etc
    **/
 
-  // bool value that checks if the input exists in the SD card
-  bool result = CS_SD.exists(input);
-
+//  input += ".wav";
+  //  bool value that checks if the input exists in the SD card
+  bool result = SD.exists(input);
+  Serial.println(result);
   // if file exists
   if(result){
-   tmrpcm.play(input);
+   tmrpcm.play(input.c_str());
   }
   // if does not exist
   else{
      // open a file called 
-    CS_SD.open("usable_uid.txt", FILE_WRITE);
+    myFile = SD.open("UID.txt", FILE_WRITE);
     // checks if the file opened
-    if(CS_SD){
+    if(myFile == true){
       Serial.println("Adding UID to text");
       // writing UID to text file
-      CS_SD.println(input);
+      myFile.println(input);
+      myFile.close();
+      
+      myFile = SD.open("UID.txt");
+      while (myFile.available()) {
+      Serial.write(myFile.read());
+      }
+      // close the file:
+      myFile.close();
     }
     // if file opens unsuccessfully 
     else{
       Serial.println("Error opening file!");
     }
   }
-
 }
 
 /**
@@ -158,7 +170,7 @@ void handleFile(String input){
  * I'm following the SOLID principles so I am moving it out
  * the main
  **/
-void extractUID(String content){
+String extractUID(String content){
   for (byte i = 0; i < mfrc522.uid.size; i++) 
   {
      Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : "");
@@ -166,4 +178,5 @@ void extractUID(String content){
      content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : ""));
      content.concat(String(mfrc522.uid.uidByte[i], HEX));
   }
+  return content;
 }
