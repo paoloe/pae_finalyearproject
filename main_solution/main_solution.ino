@@ -180,3 +180,35 @@ String extractUID(String content){
   }
   return content;
 }
+
+/**
+ * checkDups
+ *
+ * This method will handle the next process when a new UID
+ * is saved to the text file and the UID is now used to save
+ * an audio track. 
+ * 
+ * At it's simplest all I need to do is use the function that
+ * checks if the UID exists and if it does make sure that it
+ * doesn't exist within the text file.
+ * 
+ * Look into how to check if a string value exists in a text
+ * file.
+ * 
+ * The text file delimeter for all of the UID's is a new space 
+ * each new UID saved is saved in a new line.
+ * 
+ * Solution: regex!
+ **/
+
+bool checkDups(String UID){
+  /**
+   * if(SD.exists(UID)){
+   *  if(UID exists in text file){
+   *    remove UID from text file
+   *  }
+   * }
+   **/
+
+
+}
