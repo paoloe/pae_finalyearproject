@@ -1,9 +1,8 @@
 /**
  * 
- * All the resources for this project: https://randomnerdtutorials.com/
- * Modified by Rui Santos
- * 
- * Created by FILIPEFLOP
+ * @title  NFC Speaker System
+ * @author Paolo Espiritu
+ * @year   2020
  * 
  **/
 
